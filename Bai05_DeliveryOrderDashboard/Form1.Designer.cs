@@ -21,6 +21,7 @@ namespace Bai05_DeliveryOrderDashboard
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             splitContainer1 = new SplitContainer();
             grpCustomer = new GroupBox();
             txtDiaChi = new TextBox();
@@ -35,16 +36,20 @@ namespace Bai05_DeliveryOrderDashboard
             lblTenKhachHang = new Label();
             txtMaDonHang = new TextBox();
             lblMaDonHang = new Label();
-            pnlGridHeader = new Panel();
-            btnXoaDong = new Button();
-            btnThemDong = new Button();
-            lblGridTitle = new Label();
+            tabControl1 = new TabControl();
+            tabChiTietHang = new TabPage();
             dgvItems = new DataGridView();
             colTenHang = new DataGridViewTextBoxColumn();
             colSoLuong = new DataGridViewTextBoxColumn();
             colTrongLuong = new DataGridViewTextBoxColumn();
             colDonGia = new DataGridViewTextBoxColumn();
             colThanhTien = new DataGridViewTextBoxColumn();
+            pnlGridHeader = new Panel();
+            btnXoaDong = new Button();
+            btnThemDong = new Button();
+            lblGridTitle = new Label();
+            tabGhiChu = new TabPage();
+            txtGhiChu = new TextBox();
             statusStrip1 = new StatusStrip();
             sslThoiGian = new ToolStripStatusLabel();
             sslTongSoLuong = new ToolStripStatusLabel();
@@ -57,8 +62,11 @@ namespace Bai05_DeliveryOrderDashboard
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
             grpCustomer.SuspendLayout();
-            pnlGridHeader.SuspendLayout();
+            tabControl1.SuspendLayout();
+            tabChiTietHang.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvItems).BeginInit();
+            pnlGridHeader.SuspendLayout();
+            tabGhiChu.SuspendLayout();
             statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             SuspendLayout();
@@ -77,10 +85,9 @@ namespace Bai05_DeliveryOrderDashboard
             // 
             // splitContainer1.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(dgvItems);
-            splitContainer1.Panel2.Controls.Add(pnlGridHeader);
+            splitContainer1.Panel2.Controls.Add(tabControl1);
             splitContainer1.Panel2.Padding = new Padding(5, 10, 10, 10);
-            splitContainer1.Size = new Size(980, 480);
+            splitContainer1.Size = new Size(1000, 500);
             splitContainer1.SplitterDistance = 330;
             splitContainer1.TabIndex = 0;
             // 
@@ -101,7 +108,7 @@ namespace Bai05_DeliveryOrderDashboard
             grpCustomer.Dock = DockStyle.Fill;
             grpCustomer.Location = new Point(10, 10);
             grpCustomer.Name = "grpCustomer";
-            grpCustomer.Size = new Size(315, 460);
+            grpCustomer.Size = new Size(315, 480);
             grpCustomer.TabIndex = 0;
             grpCustomer.TabStop = false;
             grpCustomer.Text = "Thông tin khách hàng & Vận chuyển";
@@ -212,48 +219,28 @@ namespace Bai05_DeliveryOrderDashboard
             lblMaDonHang.TabIndex = 6;
             lblMaDonHang.Text = "Mã đơn hàng:";
             // 
-            // pnlGridHeader
+            // tabControl1
             // 
-            pnlGridHeader.Controls.Add(btnXoaDong);
-            pnlGridHeader.Controls.Add(btnThemDong);
-            pnlGridHeader.Controls.Add(lblGridTitle);
-            pnlGridHeader.Dock = DockStyle.Top;
-            pnlGridHeader.Location = new Point(5, 10);
-            pnlGridHeader.Name = "pnlGridHeader";
-            pnlGridHeader.Size = new Size(631, 38);
-            pnlGridHeader.TabIndex = 0;
+            tabControl1.Controls.Add(tabChiTietHang);
+            tabControl1.Controls.Add(tabGhiChu);
+            tabControl1.Dock = DockStyle.Fill;
+            tabControl1.Location = new Point(5, 10);
+            tabControl1.Name = "tabControl1";
+            tabControl1.SelectedIndex = 0;
+            tabControl1.Size = new Size(651, 480);
+            tabControl1.TabIndex = 0;
             // 
-            // btnXoaDong
+            // tabChiTietHang
             // 
-            btnXoaDong.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnXoaDong.Location = new Point(515, 3);
-            btnXoaDong.Name = "btnXoaDong";
-            btnXoaDong.Size = new Size(112, 30);
-            btnXoaDong.TabIndex = 2;
-            btnXoaDong.Text = "Xóa dòng (Del)";
-            btnXoaDong.UseVisualStyleBackColor = true;
-            btnXoaDong.Click += btnXoaDong_Click;
-            // 
-            // btnThemDong
-            // 
-            btnThemDong.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnThemDong.Location = new Point(390, 3);
-            btnThemDong.Name = "btnThemDong";
-            btnThemDong.Size = new Size(120, 30);
-            btnThemDong.TabIndex = 1;
-            btnThemDong.Text = "Thêm dòng (F2)";
-            btnThemDong.UseVisualStyleBackColor = true;
-            btnThemDong.Click += btnThemDong_Click;
-            // 
-            // lblGridTitle
-            // 
-            lblGridTitle.AutoSize = true;
-            lblGridTitle.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            lblGridTitle.Location = new Point(0, 8);
-            lblGridTitle.Name = "lblGridTitle";
-            lblGridTitle.Size = new Size(251, 21);
-            lblGridTitle.TabIndex = 0;
-            lblGridTitle.Text = "Chi tiết danh mục hàng hóa:";
+            tabChiTietHang.Controls.Add(dgvItems);
+            tabChiTietHang.Controls.Add(pnlGridHeader);
+            tabChiTietHang.Location = new Point(4, 29);
+            tabChiTietHang.Name = "tabChiTietHang";
+            tabChiTietHang.Padding = new Padding(3);
+            tabChiTietHang.Size = new Size(643, 447);
+            tabChiTietHang.TabIndex = 0;
+            tabChiTietHang.Text = "Chi tiết danh mục hàng hóa";
+            tabChiTietHang.UseVisualStyleBackColor = true;
             // 
             // dgvItems
             // 
@@ -262,14 +249,18 @@ namespace Bai05_DeliveryOrderDashboard
             dgvItems.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvItems.Columns.AddRange(new DataGridViewColumn[] { colTenHang, colSoLuong, colTrongLuong, colDonGia, colThanhTien });
             dgvItems.Dock = DockStyle.Fill;
-            dgvItems.Location = new Point(5, 48);
+            dgvItems.Location = new Point(3, 43);
             dgvItems.MultiSelect = false;
             dgvItems.Name = "dgvItems";
             dgvItems.RowHeadersWidth = 35;
-            dgvItems.Size = new Size(631, 422);
+            dgvItems.Size = new Size(637, 401);
             dgvItems.TabIndex = 1;
+            dgvItems.CellValidating += dgvItems_CellValidating;
+            dgvItems.CellEndEdit += dgvItems_CellEndEdit;
             dgvItems.CellValueChanged += dgvItems_CellValueChanged;
+            dgvItems.CurrentCellDirtyStateChanged += dgvItems_CurrentCellDirtyStateChanged;
             dgvItems.RowsRemoved += dgvItems_RowsRemoved;
+            dgvItems.KeyDown += dgvItems_KeyDown;
             // 
             // colTenHang
             // 
@@ -301,25 +292,91 @@ namespace Bai05_DeliveryOrderDashboard
             dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleRight;
             colDonGia.DefaultCellStyle = dataGridViewCellStyle3;
             colDonGia.FillWeight = 90F;
-            colDonGia.HeaderText = "Đơn giá";
+            colDonGia.HeaderText = "Đơn giá (VNĐ)";
             colDonGia.MinimumWidth = 6;
             colDonGia.Name = "colDonGia";
             // 
             // colThanhTien
             // 
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleRight;
+            colThanhTien.DefaultCellStyle = dataGridViewCellStyle4;
             colThanhTien.FillWeight = 100F;
-            colThanhTien.HeaderText = "Thành tiền";
+            colThanhTien.HeaderText = "Thành tiền (VNĐ)";
             colThanhTien.MinimumWidth = 6;
             colThanhTien.Name = "colThanhTien";
             colThanhTien.ReadOnly = true;
+            // 
+            // pnlGridHeader
+            // 
+            pnlGridHeader.Controls.Add(btnXoaDong);
+            pnlGridHeader.Controls.Add(btnThemDong);
+            pnlGridHeader.Controls.Add(lblGridTitle);
+            pnlGridHeader.Dock = DockStyle.Top;
+            pnlGridHeader.Location = new Point(3, 3);
+            pnlGridHeader.Name = "pnlGridHeader";
+            pnlGridHeader.Size = new Size(637, 40);
+            pnlGridHeader.TabIndex = 0;
+            // 
+            // btnXoaDong
+            // 
+            btnXoaDong.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnXoaDong.Location = new Point(515, 5);
+            btnXoaDong.Name = "btnXoaDong";
+            btnXoaDong.Size = new Size(118, 30);
+            btnXoaDong.TabIndex = 2;
+            btnXoaDong.Text = "Xóa dòng (Del)";
+            btnXoaDong.UseVisualStyleBackColor = true;
+            btnXoaDong.Click += btnXoaDong_Click;
+            // 
+            // btnThemDong
+            // 
+            btnThemDong.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnThemDong.Location = new Point(385, 5);
+            btnThemDong.Name = "btnThemDong";
+            btnThemDong.Size = new Size(124, 30);
+            btnThemDong.TabIndex = 1;
+            btnThemDong.Text = "Thêm dòng (F2)";
+            btnThemDong.UseVisualStyleBackColor = true;
+            btnThemDong.Click += btnThemDong_Click;
+            // 
+            // lblGridTitle
+            // 
+            lblGridTitle.AutoSize = true;
+            lblGridTitle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblGridTitle.Location = new Point(5, 10);
+            lblGridTitle.Name = "lblGridTitle";
+            lblGridTitle.Size = new Size(157, 20);
+            lblGridTitle.TabIndex = 0;
+            lblGridTitle.Text = "Danh mục hàng hóa:";
+            // 
+            // tabGhiChu
+            // 
+            tabGhiChu.Controls.Add(txtGhiChu);
+            tabGhiChu.Location = new Point(4, 29);
+            tabGhiChu.Name = "tabGhiChu";
+            tabGhiChu.Padding = new Padding(10);
+            tabGhiChu.Size = new Size(643, 447);
+            tabGhiChu.TabIndex = 1;
+            tabGhiChu.Text = "Ghi chú & Chỉ dẫn giao hàng";
+            tabGhiChu.UseVisualStyleBackColor = true;
+            // 
+            // txtGhiChu
+            // 
+            txtGhiChu.Dock = DockStyle.Fill;
+            txtGhiChu.Location = new Point(10, 10);
+            txtGhiChu.Multiline = true;
+            txtGhiChu.Name = "txtGhiChu";
+            txtGhiChu.PlaceholderText = "Nhập ghi chú giao hàng hoặc yêu cầu đặc biệt từ khách hàng...";
+            txtGhiChu.Size = new Size(623, 427);
+            txtGhiChu.TabIndex = 0;
             // 
             // statusStrip1
             // 
             statusStrip1.ImageScalingSize = new Size(20, 20);
             statusStrip1.Items.AddRange(new ToolStripItem[] { sslThoiGian, sslTongSoLuong, sslTongTrongLuong, sslTongTien });
-            statusStrip1.Location = new Point(0, 480);
+            statusStrip1.Location = new Point(0, 500);
             statusStrip1.Name = "statusStrip1";
-            statusStrip1.Size = new Size(980, 26);
+            statusStrip1.Size = new Size(1000, 26);
             statusStrip1.TabIndex = 1;
             statusStrip1.Text = "statusStrip1";
             // 
@@ -364,11 +421,11 @@ namespace Bai05_DeliveryOrderDashboard
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(980, 506);
+            ClientSize = new Size(1000, 526);
             Controls.Add(splitContainer1);
             Controls.Add(statusStrip1);
             KeyPreview = true;
-            MinimumSize = new Size(800, 450);
+            MinimumSize = new Size(850, 480);
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Bài 5 - Bảng điều khiển Quản lý Đơn giao hàng";
@@ -380,9 +437,13 @@ namespace Bai05_DeliveryOrderDashboard
             splitContainer1.ResumeLayout(false);
             grpCustomer.ResumeLayout(false);
             grpCustomer.PerformLayout();
+            tabControl1.ResumeLayout(false);
+            tabChiTietHang.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dgvItems).EndInit();
             pnlGridHeader.ResumeLayout(false);
             pnlGridHeader.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)dgvItems).EndInit();
+            tabGhiChu.ResumeLayout(false);
+            tabGhiChu.PerformLayout();
             statusStrip1.ResumeLayout(false);
             statusStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
@@ -406,6 +467,10 @@ namespace Bai05_DeliveryOrderDashboard
         private RadioButton rdoGiaoNhanh;
         private RadioButton rdoGiaoTietKiem;
         private RadioButton rdoGiaoHoaToc;
+        private TabControl tabControl1;
+        private TabPage tabChiTietHang;
+        private TabPage tabGhiChu;
+        private TextBox txtGhiChu;
         private Panel pnlGridHeader;
         private Label lblGridTitle;
         private Button btnThemDong;
