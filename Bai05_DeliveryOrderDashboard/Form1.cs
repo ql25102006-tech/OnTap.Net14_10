@@ -12,10 +12,8 @@ namespace Bai05_DeliveryOrderDashboard
             txtMaDonHang.Text = $"DH-{DateTime.Now:yyyyMMddHHmm}";
             CapNhatThoiGianRealtime();
 
-            // Thêm dữ liệu mẫu ban đầu
-            ThemDongMoi("Sách Lập trình C#", 2, 0.85, 125000);
-            ThemDongMoi("Bàn phím máy tính", 1, 0.70, 650000);
-
+            // Mở lên ban đầu thêm 1 dòng đầu tiên để người dùng bắt đầu nhập
+            ThemDongMoi();
             TinhToanLaiToanBo();
         }
 
@@ -42,17 +40,47 @@ namespace Bai05_DeliveryOrderDashboard
 
         private void btnThemDong_Click(object sender, EventArgs e)
         {
+            // Kiểm tra: Nếu trong bảng đã có dòng nào chưa nhập xong hoặc dữ liệu lỗi thì không cho thêm tiếp dòng mới
+            if (dgvItems.RowCount > 0)
+            {
+                DataGridViewRow lastRow = dgvItems.Rows[dgvItems.RowCount - 1];
+                string ten = lastRow.Cells[0].Value?.ToString()?.Trim() ?? string.Empty;
+
+                if (string.IsNullOrEmpty(ten))
+                {
+                    MessageBox.Show("Vui lòng nhập Tên hàng cho dòng hiện tại trước khi thêm dòng mới!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    dgvItems.CurrentCell = lastRow.Cells[0];
+                    dgvItems.BeginEdit(true);
+                    return;
+                }
+
+                // Kiểm tra Số lượng > 0
+                string? strSL = lastRow.Cells[1].Value?.ToString()?.Trim();
+                if (string.IsNullOrEmpty(strSL) || !int.TryParse(strSL, out int sl) || sl <= 0)
+                {
+                    MessageBox.Show("Số lượng phải là số nguyên lớn hơn 0!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    dgvItems.CurrentCell = lastRow.Cells[1];
+                    dgvItems.BeginEdit(true);
+                    return;
+                }
+
+                // Kiểm tra Trọng lượng > 0
+                string? strTL = lastRow.Cells[2].Value?.ToString()?.Trim();
+                if (string.IsNullOrEmpty(strTL) || !double.TryParse(strTL, out double tl) || tl <= 0)
+                {
+                    MessageBox.Show("Trọng lượng phải lớn hơn 0 kg!", "Cảnh báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    dgvItems.CurrentCell = lastRow.Cells[2];
+                    dgvItems.BeginEdit(true);
+                    return;
+                }
+            }
+
             ThemDongMoi();
             if (dgvItems.RowCount > 0)
             {
-                int newRowIndex = dgvItems.RowCount - 1;
-                // Nếu dòng cuối là new row (dòng trống chờ nhập) thì chọn dòng vừa thêm
-                if (dgvItems.Rows[newRowIndex].IsNewRow && newRowIndex > 0)
-                {
-                    newRowIndex--;
-                }
-                dgvItems.CurrentCell = dgvItems.Rows[newRowIndex].Cells[0];
-                dgvItems.Focus();
+                int newIndex = dgvItems.RowCount - 1;
+                dgvItems.CurrentCell = dgvItems.Rows[newIndex].Cells[0];
+                dgvItems.BeginEdit(true);
             }
         }
 
@@ -65,11 +93,14 @@ namespace Bai05_DeliveryOrderDashboard
         {
             if (dgvItems.CurrentRow != null && !dgvItems.CurrentRow.IsNewRow)
             {
-                string tenHang = dgvItems.CurrentRow.Cells[0].Value?.ToString() ?? "mặt hàng này";
-                DialogResult dr = MessageBox.Show($"Bạn có chắc chắn muốn xóa dòng [{tenHang}] khỏi đơn hàng?", "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                string tenHang = dgvItems.CurrentRow.Cells[0].Value?.ToString()?.Trim() ?? string.Empty;
+                string displayTen = string.IsNullOrEmpty(tenHang) ? "dòng đang chọn" : $"[{tenHang}]";
+
+                DialogResult dr = MessageBox.Show($"Bạn có chắc chắn muốn xóa {displayTen} khỏi đơn hàng?", "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (dr == DialogResult.Yes)
                 {
                     dgvItems.Rows.Remove(dgvItems.CurrentRow);
+                    errorProvider1.SetError(dgvItems, string.Empty);
                     TinhToanLaiToanBo();
                 }
             }
@@ -92,7 +123,6 @@ namespace Bai05_DeliveryOrderDashboard
 
         private void dgvItems_KeyDown(object sender, KeyEventArgs e)
         {
-            // Nếu người dùng nhấn phím Delete khi đang chọn cả dòng hoặc không trong chế độ gõ chữ cell
             if (e.KeyCode == Keys.Delete && !dgvItems.IsCurrentCellInEditMode)
             {
                 XoaDongDangChon();
@@ -100,50 +130,68 @@ namespace Bai05_DeliveryOrderDashboard
             }
         }
 
-        // Kiểm tra lỗi (Validate) bằng ErrorProvider khi người dùng đang nhập dữ liệu
+        // Bắt lỗi cảnh báo đỏ ErrorProvider khi người dùng nhập Số lượng hoặc Trọng lượng <= 0
         private void dgvItems_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
         {
             if (e.RowIndex < 0 || e.RowIndex >= dgvItems.RowCount) return;
-            if (dgvItems.Rows[e.RowIndex].IsNewRow) return;
 
             string inputVal = e.FormattedValue?.ToString()?.Trim() ?? string.Empty;
 
-            // Kiểm tra cột 1: Số lượng (nguyên > 0)
+            // Kiểm tra cột 1: Số lượng
             if (e.ColumnIndex == 1)
             {
                 if (string.IsNullOrEmpty(inputVal) || !int.TryParse(inputVal, out int sl) || sl <= 0)
                 {
-                    dgvItems.Rows[e.RowIndex].Cells[1].ErrorText = "Số lượng phải là số nguyên > 0!";
-                    errorProvider1.SetError(dgvItems, "Số lượng tại dòng " + (e.RowIndex + 1) + " phải là số nguyên > 0!");
+                    string msg = "Số lượng tại dòng " + (e.RowIndex + 1) + " phải là số nguyên > 0!";
+                    dgvItems.Rows[e.RowIndex].Cells[1].ErrorText = msg;
+                    errorProvider1.SetError(dgvItems, msg);
                 }
                 else
                 {
                     dgvItems.Rows[e.RowIndex].Cells[1].ErrorText = string.Empty;
-                    errorProvider1.SetError(dgvItems, string.Empty);
+                    KiemTraXoaErrorProviderTong();
                 }
             }
-            // Kiểm tra cột 2: Trọng lượng (số > 0)
+            // Kiểm tra cột 2: Trọng lượng
             else if (e.ColumnIndex == 2)
             {
                 if (string.IsNullOrEmpty(inputVal) || !double.TryParse(inputVal, out double tl) || tl <= 0)
                 {
-                    dgvItems.Rows[e.RowIndex].Cells[2].ErrorText = "Trọng lượng phải > 0 kg!";
-                    errorProvider1.SetError(dgvItems, "Trọng lượng tại dòng " + (e.RowIndex + 1) + " phải > 0 kg!");
+                    string msg = "Trọng lượng tại dòng " + (e.RowIndex + 1) + " phải > 0 kg!";
+                    dgvItems.Rows[e.RowIndex].Cells[2].ErrorText = msg;
+                    errorProvider1.SetError(dgvItems, msg);
                 }
                 else
                 {
                     dgvItems.Rows[e.RowIndex].Cells[2].ErrorText = string.Empty;
-                    errorProvider1.SetError(dgvItems, string.Empty);
+                    KiemTraXoaErrorProviderTong();
                 }
+            }
+        }
+
+        private void KiemTraXoaErrorProviderTong()
+        {
+            bool coLoi = false;
+            foreach (DataGridViewRow row in dgvItems.Rows)
+            {
+                if (!string.IsNullOrEmpty(row.Cells[1].ErrorText) || !string.IsNullOrEmpty(row.Cells[2].ErrorText))
+                {
+                    coLoi = true;
+                    break;
+                }
+            }
+            if (!coLoi)
+            {
+                errorProvider1.SetError(dgvItems, string.Empty);
             }
         }
 
         private void dgvItems_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            dgvItems.Rows[e.RowIndex].ErrorText = string.Empty;
+            KiemTraXoaErrorProviderTong();
         }
 
-        // Tự động tính toán realtime khi thay đổi giá trị
+        // Tự động tính toán realtime ngay khi người dùng gõ phím thay đổi giá trị
         private void dgvItems_CurrentCellDirtyStateChanged(object sender, EventArgs e)
         {
             if (dgvItems.IsCurrentCellDirty)
@@ -157,7 +205,6 @@ namespace Bai05_DeliveryOrderDashboard
             if (e.RowIndex < 0 || e.RowIndex >= dgvItems.RowCount) return;
 
             DataGridViewRow row = dgvItems.Rows[e.RowIndex];
-            if (row.IsNewRow) return;
 
             int soLuong = 0;
             var valSL = row.Cells[1].Value;
@@ -181,6 +228,7 @@ namespace Bai05_DeliveryOrderDashboard
 
         private void dgvItems_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
+            KiemTraXoaErrorProviderTong();
             TinhToanLaiToanBo();
         }
 
@@ -192,8 +240,6 @@ namespace Bai05_DeliveryOrderDashboard
 
             foreach (DataGridViewRow row in dgvItems.Rows)
             {
-                if (row.IsNewRow) continue;
-
                 var cellSL = row.Cells[1].Value;
                 if (cellSL != null && int.TryParse(cellSL.ToString()?.Trim(), out int sl) && sl > 0)
                 {

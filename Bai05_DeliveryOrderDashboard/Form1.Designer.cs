@@ -244,7 +244,7 @@ namespace Bai05_DeliveryOrderDashboard
             // 
             // dgvItems
             // 
-            dgvItems.AllowUserToAddRows = true;
+            dgvItems.AllowUserToAddRows = false;
             dgvItems.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvItems.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvItems.Columns.AddRange(new DataGridViewColumn[] { colTenHang, colSoLuong, colTrongLuong, colDonGia, colThanhTien });
